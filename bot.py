@@ -11,10 +11,11 @@ async def send_message(message, user_message, is_private):
 
 def run_discord_bot():
   TOKEN = 'ODY0NTY1OTY2MTIwNjgxNTAz.GhrwMt.Th9HxRg_de168YelTbTQEH7RwWNZY7f6c9BJyY'
-  client = discord.Client()
+  intents = discord.Intents.default()
+  intents.message_content = True
+  client = discord.Client(intents=intents)
 
   @client.event
-
   async def on_ready():
     print(f'{client.user}is now running!')
 
@@ -22,6 +23,10 @@ def run_discord_bot():
   async def on_message(message):
     if message.author == client.user:
       return
+    
+    username = str(message.author)
+    user_message = str(message.content)
+    channel = str(message.channel)
     
     if user_message[0] =='?':
       user_message = user_message[1:]
