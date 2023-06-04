@@ -25,32 +25,37 @@ def handle_Response(message, username) -> str:
             return 'I would like this to end, thank you!!'
     
     if p_message[0:5] == '8ball':
-        rnd = random.randrange(8)
+        rnd = random.randrange(10)
         if rnd  == 0:
-            toret = p_message[5:], '\n I can\'t say no, but also can\'t say yes'
+            toret = p_message[5:]+'\n I can\'t say no, but also can\'t say yes'
             return toret
         if rnd == 1:
-            toret = p_message[5:], '\n I agree'
+            toret = p_message[5:]+'\n I agree'
             return toret
         if rnd == 2:
-            toret = p_message[5:], '\n Ask someone else, will you?'
+            toret = p_message[5:]+'\n Ask someone else, will you?'
             return toret
         if rnd == 3:
-            toret = p_message[5:], '\n Not sure why are you asking that, but ok boomer'
+            toret = p_message[5:]+'\n Not sure why are you asking that, but ok boomer'
             return toret
         if rnd == 4:
-            toret = p_message[5:], '\n Yes'
+            toret = p_message[5:]+'\n Yes'
             return toret
         if rnd == 5:
-            toret  = p_message[5:], '\n Not sure'
+            toret  = p_message[5:]+'\n Not sure'
             return toret
         if rnd == 6:
-            toret = p_message[5:], '\n I don\'t know? Fucking weirdo'
+            toret = p_message[5:]+'\n I don\'t know? Fucking weirdo'
             return toret
         if rnd == 7:
-            toret = p_message[5:], '\n I\'M NOT GOD IDK ALL THE ANSWERS, ASK YOUR GOD IDFK'
+            toret = p_message[5:]+'\n I\'M NOT GOD IDK ALL THE ANSWERS, ASK YOUR GOD IDFK'
             return toret
-        
+        if rnd == 8:
+            toret = p_message[5:]+'\n???????'
+            return toret
+        if rnd == 9:
+            toret = p_message[5:]+'\n my guy, go take your meds'  
+            return toret      
     
     if p_message == 'future':
         rnd = random. randrange(6)
