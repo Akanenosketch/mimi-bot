@@ -43,26 +43,49 @@ def run_discord_bot():
   #Log events
   @bot.event
   async def on_message_delete(message):
-    try:
-      print(f"Message deleted: {message.content}- by {message.author.name}")
-      channel = await message.guild.fetch_channel(1116369654366076989)
+    async for entry in message.guild.audit_logs(limit=1,action=discord.AuditLogAction.message_delete):
+      deleter = entry.user
+      entry_user = message.guild.get_member(message.author.id)
+      if(entry_user.get_role(1116369818141073439) == None):
+        deleter = message.author
+    if message.author != bot.user:
+      try:
+        print(f"Message deleted: {message.content}- by {message.author.name} (deleted by {deleter.name})")
+        channel = await message.guild.fetch_channel(1116369654366076989)
 
-      embed = discord.Embed(
-        title = "Deleted message",
-        color= discord.Color.red(),
-      )
-      embed.add_field(name= "Author: ", value=message.author, inline=False)
-      embed.add_field(name= "Channel:", value= message.channel, inline= False)
-      if not message.content == "":
-        embed.add_field(name = "Message content", value= message.content)
-      else:
-        for i in message.attachments:
-          embed.add_field(name=message.attachments[i].proxy_url)
-      embed.set_author(name= message.author.name, icon_url= message.author.avatar)
-      await channel.send(embed=embed)
-    except discord.errors.InvalidData or discord.HTTPException or discord.Forbidden as e:
-      print(f"An exception has occurred: {e}")
-  
+        embed = discord.Embed(
+          title = "Deleted message",
+          color= discord.Color.red(),
+        )
+        embed.add_field(name= "Author: ", value=message.author, inline=False)
+        embed.add_field(name= "Channel: ", value= message.channel, inline= False)
+        embed.add_field(name="Deleter: ", value= deleter.name, inline= False)
+        if not message.content == "":
+          embed.add_field(name = "Message content", value= message.content)
+        else:
+          for i in range(len(message.attachments)):
+            embed.add_field(name=f"Message content n {i+1}" , value= message.attachments[i].proxy_url)
+        embed.set_author(name= message.author.name, icon_url= message.author.avatar)
+        await channel.send(embed=embed)
+      except discord.errors.InvalidData or discord.HTTPException or discord.Forbidden as e:
+        print(f"An exception has occurred: {e}")
+    else:
+      channel = await message.guild.fetch_channel(1116369654366076989)
+      await channel.send(f"Really? Deleting logs? I call that a **low blow** <@{deleter.id}>")
+
+  @bot.event
+  async def on_message_edit(old_message, new_message):
+    channel= await new_message.guild.fetch_channel(1116369654366076989)
+    embed = discord.Embed(
+      title= "Edited message",
+      color= discord.Color.dark_green()
+    ) 
+    embed.add_field(name="Author: ", value= new_message.author, inline=False)
+    embed.add_field(name="Old message:", value=old_message.content, inline=False)
+    embed.add_field(name="New message", value=new_message.content, inline=False)
+    embed.set_author(name=new_message.author, icon_url= new_message.author.avatar)
+    await channel.send(embed=embed)
+
 ##Bot slash commands section
 ##Help command
   @bot.slash_command(name = "help", description = "Shows all the current available commands!")
