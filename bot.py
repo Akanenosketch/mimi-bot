@@ -43,7 +43,7 @@ def run_discord_bot():
   #Log events
   @bot.event
   async def on_message_delete(message):
-    async for entry in message.guild.audit_logs(limit=1,action=discord.AuditLogAction.message_delete):
+    async for entry in message.guild.audit_logs(limit=1,action=discord.AuditLogAction.message_delete): #admin needed lol
       deleter = entry.user
       entry_user = message.guild.get_member(message.author.id)
       if(entry_user.get_role(1116369818141073439) == None):
@@ -75,16 +75,22 @@ def run_discord_bot():
 
   @bot.event
   async def on_message_edit(old_message, new_message):
-    channel= await new_message.guild.fetch_channel(1116369654366076989)
-    embed = discord.Embed(
-      title= "Edited message",
-      color= discord.Color.dark_green()
-    ) 
-    embed.add_field(name="Author: ", value= new_message.author, inline=False)
-    embed.add_field(name="Old message:", value=old_message.content, inline=False)
-    embed.add_field(name="New message", value=new_message.content, inline=False)
-    embed.set_author(name=new_message.author, icon_url= new_message.author.avatar)
-    await channel.send(embed=embed)
+    try:
+      if not old_message.author.bot:
+        channel= await new_message.guild.fetch_channel(1116369654366076989)
+        embed = discord.Embed(
+          title= "Message edited",
+          color= discord.Color.dark_green()
+        ) 
+        embed.add_field(name="Author: ", value= new_message.author, inline=False)
+        embed.add_field(name="Old message:", value=old_message.content, inline=False)
+        embed.add_field(name="New message", value=new_message.content, inline=False)
+        embed.set_author(name="Message edited", icon_url= new_message.author.avatar)
+        await channel.send(embed=embed)
+      else:
+        print("boi, since when a bot does know how to edit?")
+    except discord.errors.InvalidData as e:
+      print(f"{e}, exception caused by{old_message.author}")
 
 ##Bot slash commands section
 ##Help command
@@ -102,6 +108,37 @@ def run_discord_bot():
     embed.add_field(name= "avatar", value= "Stealing pfps? Gotcha", inline =False)
     await ctx.respond(embed= embed)
     
+  @bot.slash_command(name="free_time", description= "Shows how much free time you have! (I am not responsible if it's accurate to your real free-time)")
+  async def free_time(ctx):
+    rnd= random.randrange(7)
+    embed = discord.Embed(
+      title= "How much free time you have?",
+      color= discord.Color.teal()
+    )
+    if rnd==1:
+      embed.add_field(name="Your amount of free time is...." , value= "`NullFreeTimeException` \nYou have no free time ||~~coffee coffee coffee coffe coffee~~||", inline=False)
+      embed.set_image( url="https://cdn.discordapp.com/attachments/1117814758175953047/1117814822650789979/Investigacion_y_diseno_6.png")
+    if rnd==0:
+      embed.add_field(name="Your amount of free time is...." , value= "`NegativeFreeTimeException` \nYou're the definition of not having a fucking life", inline=False)
+      embed.set_image(url="https://cdn.discordapp.com/attachments/1117814758175953047/1117814824852795432/Investigacion_y_diseno_7.png")
+    if rnd==2:
+      embed.add_field(name="Your amount of free time is....", value="You have really little free time.\nHey! Don't bother this person, they are a pretty busy one", inline=False)
+      embed.set_image(url="https://cdn.discordapp.com/attachments/1117814758175953047/1117814823040864256/Investigacion_y_diseno_5.png")
+    if rnd==3:
+      embed.add_field(name="Your amount of free time is....", value= "You have a bit of free time...\nGo out and grab a coffee as a break!", inline=False)
+      embed.set_image(url="https://media.discordapp.net/attachments/1117814758175953047/1117814823468679229/Investigacion_y_diseno_4.png")
+    if rnd==4:
+      embed.add_field(name="Your amount of free time is....", value= "Still busy but more free than I am", inline=False)
+      embed.set_image(url="https://media.discordapp.net/attachments/1117814758175953047/1117814823753887754/Investigacion_y_diseno_3.png")
+    if rnd==5:
+      embed.add_field(name="Your amoutn of free time is....", value= "You have a lots of free time...\n**Gimme some of your free time**", inline=False)
+      embed.set_image(url="https://media.discordapp.net/attachments/1117814758175953047/1117814824064274493/Investigacion_y_diseno_2.png")
+    if rnd==6:
+      embed.add_field(name="Your amount of free time is....", value="You have too much free time...im jelly\n||I NeEd YoUr FrEe TiMe FoR ReSeArCh PuRpOsEs ~~to fucking sleep~~||", inline=False)
+      embed.set_image(url="https://media.discordapp.net/attachments/1117814758175953047/1117814824424980571/Investigacion_y_diseno.png")
+    await ctx.defer()
+    await ctx.respond(embed=embed)
+
   @bot.slash_command(name = "ping", description = "Shows the bot's ping!")
   async def ping(ctx):
       rnd = random.randrange(4)
