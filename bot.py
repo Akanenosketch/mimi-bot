@@ -44,9 +44,9 @@ def run_discord_bot():
   @bot.event
   async def on_message_delete(message):
     async for entry in message.guild.audit_logs(limit=1,action=discord.AuditLogAction.message_delete): #admin needed lol
-      deleter = entry.user
+      print(f"deleter ={deleter} ")
       entry_user = message.guild.get_member(message.author.id)
-      if(entry_user.get_role(1116369818141073439) == None):
+      if(not entry_user.get_role(1116369818141073439) == None):
         deleter = message.author
     if message.author != bot.user:
       try:
@@ -87,8 +87,6 @@ def run_discord_bot():
         embed.add_field(name="New message", value=new_message.content, inline=False)
         embed.set_author(name="Message edited", icon_url= new_message.author.avatar)
         await channel.send(embed=embed)
-      else:
-        print("boi, since when a bot does know how to edit?")
     except discord.errors.InvalidData as e:
       print(f"{e}, exception caused by{old_message.author}")
 
